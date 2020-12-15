@@ -155,6 +155,51 @@ def login(inputPK, inputID, inputPassword):
                 title="로그인 실패", message="보안번호, 아이디 혹은 비밀번호가\n 틀렸습니다.")
         else:
             messagebox.askyesno(title="로그인 성공", message="창을 닫고 진행하십시오.")
+            bank = BankAccount(pk)
+            while True:
+                menu = int(
+                    input('\n원하시는 기능을 선택하세요 ( 1 : 입금, 2 : 송금, 3 : 종료 ) : '))
+                if type(menu) != int:
+                    print("번호를 입력하십시오.")
+                elif menu < 0 or menu > 3:
+                    print("잘못된 번호입니다. 다시 입력해주세요.")
+                else:
+                    if menu == 1:
+                        bank.deposit(int(input('\n입금할 금액을 입력하세요(원) : ')))
+                        print('귀하의 잔액은 ', bank.get_balance(), '원 입니다.\n')
+                    elif menu == 2:
+                        bank.withdraw(int(input('\n송금할 금액을 입력하세요(원) : ')))
+                        print('귀하의 잔액은 ', bank.get_balance(), '원 입니다.\n')
+                    elif menu == 3:
+                        print('\n이용해주셔서 감사합니다.\n 종료 버튼을 눌러주십시오.')
+                        break
+
+
+class BankAccount:
+
+    def __init__(self, pk):
+        data = read(pk)
+        self.__balance = data.get("balance")
+        self.__balance = int(self.__balance)
+
+    def deposit(self, amount):
+        if amount < 0:
+            print("음수는 입력할 수 없습니다.")
+        else:
+            self.__balance += amount
+            print(f"귀하의 통장에 {amount} 원이 입금되었습니다.")
+            return self.__balance
+
+    def withdraw(self, amount):
+        if amount > self.__balance:
+            print("잔액이 부족합니다.")
+        else:
+            self.__balance -= amount
+            print(f"귀하의 통장에서 {amount} 원이 송금되었습니다.")
+            return self.__balance
+
+    def get_balance(self):
+        return self.__balance
 
 
 window = App()
