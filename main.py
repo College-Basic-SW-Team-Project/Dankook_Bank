@@ -79,6 +79,7 @@ class SignUpPage(Frame):
         back_button.grid(row=10)
 
 
+# 입력 함수 부분
 def signWrite(pk, username, ID, password):
     user_file_path = "./json/users.json"
     user_data = {}
@@ -87,6 +88,7 @@ def signWrite(pk, username, ID, password):
         user_data = json.load(json_file)
 
     user_data[pk] = {
+        "pk": pk,
         "username": username,
         "id": ID,
         "password": password,
@@ -107,6 +109,7 @@ def writeBalance(pk, balance):
         json.dump(user_data, outfile, indent=4)
 
 
+# 출력 함수 부분
 def read(pk):
     user_file_path = "./json/users.json"
     with open(user_file_path, "r") as json_file:
@@ -125,33 +128,53 @@ def loginRead(pk):
         return ID, Password
 
 
+# 회원가입 부분
 def sign_in(inputPK, inputUsername, inputID, inputPassword):
     pk = inputPK.get()
     username = inputUsername.get()
     ID = inputID.get()
     password = inputPassword.get()
+    data = read(pk)
+    data_pk = data.get("pk")
+    data_user = data.get("username")
+    data_id = data.get("id")
+    data_password = data.get("password")
+    if pk == data_pk:
+        messagebox.askyesno(title="Validation Error",
+                            message="중복되는 보안 코드가 이미 있습니다.")
 
-    if not pk:
-        messagebox.askyesno(title="회원가입 오류", message="보안번호를 입력하지 않았습니다.")
-    elif not username:
-        messagebox.askyesno(title="회원가입 오류", message="유저 이름을 입력하지 않았습니다.")
-    elif not ID:
-        messagebox.askyesno(title="회원가입 오류", message="아이디를 입력하지 않았습니다.")
-    elif not password:
-        messagebox.askyesno(title="회원가입 오류", message="비밀번호를 입력하지 않았습니다.")
+    elif username == data_user:
+        messagebox.askyesno(title="Validation Error",
+                            message="중복되는 이름이 이미 있습니다.")
+    elif ID == data_id:
+        messagebox.askyesno(title="Validation Error",
+                            message="중복되는 아이디가 이미 있습니다.")
+    elif password == data_password:
+        messagebox.askyesno(title="Validation Error",
+                            message="중복되는 비밀번호가 이미 있습니다.")
     else:
-        db = signWrite(pk, username, ID, password)
-        messagebox.askyesno(
-            title="회원가입 성공", message="회원가입 성공\n '이전으로' 버튼을 눌러주십시오.")
+        if not pk:
+            messagebox.askyesno(title="회원가입 오류", message="보안 코드를 입력하지 않았습니다.")
+        elif not username:
+            messagebox.askyesno(title="회원가입 오류", message="유저 이름을 입력하지 않았습니다.")
+        elif not ID:
+            messagebox.askyesno(title="회원가입 오류", message="아이디를 입력하지 않았습니다.")
+        elif not password:
+            messagebox.askyesno(title="회원가입 오류", message="비밀번호를 입력하지 않았습니다.")
+        else:
+            db = signWrite(pk, username, ID, password)
+            messagebox.askyesno(
+                title="회원가입 성공", message="회원가입 성공\n '이전으로' 버튼을 눌러주십시오.")
 
 
+# 로그인 부분
 def login(inputPK, inputID, inputPassword):
     pk = inputPK.get()
     ID = inputID.get()
     password = inputPassword.get()
     if not pk:
         messagebox.askyesno(
-            title="로그인 에러", message="보안번호를 입력하지 않았습니다.")
+            title="로그인 에러", message="보안 코드를 입력하지 않았습니다.")
     elif not ID:
         messagebox.askyesno(title="로그인 에러", message="아이디를 입력하지 않았습니다.")
     elif not password:
@@ -160,9 +183,11 @@ def login(inputPK, inputID, inputPassword):
         db = loginRead(pk)
         db_id = db[0]
         db_password = db[1]
-        if db_id != ID or db_password != password:
+        if db_id != ID:
             messagebox.askyesno(
-                title="로그인 실패", message="보안번호, 아이디 혹은 비밀번호가\n 틀렸습니다.")
+                title="로그인 실패", message="아이디가\n 틀렸습니다.")
+        elif db_password != password:
+            messagebox.askyesno(title="로그인 실패", message="비밀번호가\n 틀렸습니다.")
         else:
             messagebox.askyesno(title="로그인 성공", message="창을 닫고 진행하십시오.")
             bank = BankAccount(pk)
@@ -185,6 +210,7 @@ def login(inputPK, inputID, inputPassword):
                         break
 
 
+# 은행 기능 부분
 class BankAccount:
 
     def __init__(self, pk):
@@ -215,6 +241,7 @@ class BankAccount:
         return self.__balance
 
 
+# 프로그램 실행 부분
 window = App()
 window.title("단국뱅킹")
 window.mainloop()
