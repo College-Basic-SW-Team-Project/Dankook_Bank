@@ -1,17 +1,20 @@
 {
   "1": {
+    "pk": "1",
     "username": "madoht",
     "id": "1234",
     "password": "1234",
     "balance": "0"
   },
   "2": {
+    "pk": "2",
     "username": "lalala",
     "id": "5641",
     "password": "1345",
     "balance": "0"
   },
   "5": {
+    "pk": "5",
     "username": "kmnu",
     "id": "1536",
     "password": "15648",
