@@ -1,14 +1,22 @@
 {
-  "1": {
-    "username": "madoht",
-    "id": "1234",
-    "password": "1234",
-    "balance": "0"
-  },
-  "2": {
-    "username": "lalala",
-    "id": "5641",
-    "password": "1345",
-    "balance": "0"
-  }
+    "1": {
+        "username": "madoht",
+        "id": "1234",
+        "password": "1234",
+        "balance": "0"
+    },
+    "2": {
+        "username": "lalala",
+        "id": "5641",
+        "password": "1345",
+        "balance": "0"
+    },
+    "4": [
+        {
+            "username": "kmm",
+            "id": "1234",
+            "password": "1234",
+            "balance": "0"
+        }
+    ]
 }
