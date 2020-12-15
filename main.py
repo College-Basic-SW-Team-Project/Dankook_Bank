@@ -86,14 +86,23 @@ def signWrite(pk, username, ID, password):
     with open(user_file_path, "r") as json_file:
         user_data = json.load(json_file)
 
-    user_data[pk] = []
-    user_data[pk].append({
+    user_data[pk] = {
         "username": username,
         "id": ID,
         "password": password,
         "balance": "0"
-    })
+    }
 
+    with open(user_file_path, "w") as outfile:
+        json.dump(user_data, outfile, indent=4)
+
+
+def writeBalance(pk, balance):
+    user_file_path = "./json/users.json"
+    with open(user_file_path, "r") as json_file:
+        user_data = json.load(json_file)
+
+    user_data[pk]["balance"] = str(balance)
     with open(user_file_path, "w") as outfile:
         json.dump(user_data, outfile, indent=4)
 
@@ -121,6 +130,7 @@ def sign_in(inputPK, inputUsername, inputID, inputPassword):
     username = inputUsername.get()
     ID = inputID.get()
     password = inputPassword.get()
+
     if not pk:
         messagebox.askyesno(title="회원가입 오류", message="보안번호를 입력하지 않았습니다.")
     elif not username:
@@ -171,7 +181,7 @@ def login(inputPK, inputID, inputPassword):
                         bank.withdraw(int(input('\n송금할 금액을 입력하세요(원) : ')))
                         print('귀하의 잔액은 ', bank.get_balance(), '원 입니다.\n')
                     elif menu == 3:
-                        print('\n이용해주셔서 감사합니다.\n 종료 버튼을 눌러주십시오.')
+                        print('\n이용해주셔서 감사합니다.\n\n종료 버튼을 눌러주십시오.')
                         break
 
 
@@ -179,6 +189,7 @@ class BankAccount:
 
     def __init__(self, pk):
         data = read(pk)
+        self.__pk = pk
         self.__balance = data.get("balance")
         self.__balance = int(self.__balance)
 
@@ -188,6 +199,7 @@ class BankAccount:
         else:
             self.__balance += amount
             print(f"귀하의 통장에 {amount} 원이 입금되었습니다.")
+            writeBalance(self.__pk, self.__balance)
             return self.__balance
 
     def withdraw(self, amount):
@@ -196,6 +208,7 @@ class BankAccount:
         else:
             self.__balance -= amount
             print(f"귀하의 통장에서 {amount} 원이 송금되었습니다.")
+            writeBalance(self.__pk, self.__balance)
             return self.__balance
 
     def get_balance(self):
