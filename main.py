@@ -79,14 +79,23 @@ class SignUpPage(Frame):
         back_button.grid(row=10)
 
 
-def signWrite(pk, username, id, password):
+def signWrite(pk, username, ID, password):
     user_file_path = "./json/users.json"
-
     user_data = {}
+
+    with open(user_file_path, "r") as json_file:
+        user_data = json.load(json_file)
+
     user_data[pk] = []
     user_data[pk].append({
-
+        "username": username,
+        "id": ID,
+        "password": password,
+        "balance": "0"
     })
+
+    with open(user_file_path, "w") as outfile:
+        json.dump(user_data, outfile, indent=4)
 
 
 def read(pk):
