@@ -130,9 +130,13 @@ def login(inputPK, inputID, inputPassword):
     pk = inputPK.get()
     ID = inputID.get()
     password = inputPassword.get()
-    if not pk or not ID or not password:
+    if not pk:
         messagebox.askyesno(
-            title="로그인 에러", message="보안번호, 아이디 혹은 비밀번호를\n 입력하시지않았습니다.")
+            title="로그인 에러", message="보안번호를 입력하지 않았습니다.")
+    elif not ID:
+        messagebox.askyesno(title="로그인 에러", message="아이디를 입력하지 않았습니다.")
+    elif not password:
+        messagebox.askyesno(title="로그인 에러", message="비밀번호를 입력하지 않았습니다.")
     else:
         db = loginRead(pk)
         db_id = db[0]
