@@ -79,7 +79,7 @@ class SignUpPage(Frame):
         back_button.grid(row=10)
 
 
-def write(pk, username, id, password):
+def signWrite(pk, username, id, password):
     user_file_path = "./json/users.json"
 
     user_data = {}
@@ -107,24 +107,37 @@ def loginRead(pk):
         return ID, Password
 
 
-def sign_in(pk, username, id, password):
-    pass
+def sign_in(inputPK, inputUsername, inputID, inputPassword):
+    pk = inputPK.get()
+    username = inputUsername.get()
+    ID = inputID.get()
+    password = inputPassword.get()
+    if not pk:
+        messagebox.askyesno(title="회원가입 오류", message="보안번호를 입력하지 않았습니다.")
+    elif not username:
+        messagebox.askyesno(title="회원가입 오류", message="유저 이름을 입력하지 않았습니다.")
+    elif not ID:
+        messagebox.askyesno(title="회원가입 오류", message="아이디를 입력하지 않았습니다.")
+    elif not password:
+        messagebox.askyesno(title="회원가입 오류", message="비밀번호를 입력하지 않았습니다.")
+    else:
+        db = signWrite(pk, username, ID, password)
+        messagebox.askyesno(
+            title="회원가입 성공", message="회원가입 성공\n '이전으로' 버튼을 눌러주십시오.")
 
 
 def login(inputPK, inputID, inputPassword):
     pk = inputPK.get()
     ID = inputID.get()
-    Password = inputPassword.get()
-    print(type(pk))
-    print(pk)
-    if not pk or not ID or not Password:
+    password = inputPassword.get()
+    if not pk or not ID or not password:
         messagebox.askyesno(
             title="로그인 에러", message="보안번호, 아이디 혹은 비밀번호를\n 입력하시지않았습니다.")
     else:
         db = loginRead(pk)
         db_id = db[0]
         db_password = db[1]
-        if db_id != ID or db_password != Password:
+        if db_id != ID or db_password != password:
             messagebox.askyesno(
                 title="로그인 실패", message="보안번호, 아이디 혹은 비밀번호가\n 틀렸습니다.")
         else:
