@@ -239,9 +239,9 @@ def login(inputPK, inputID, inputPassword):
             db_password = db[1]
             if db_id != ID:
                 messagebox.askyesno(
-                    title="로그인 실패", message="아이디가\n 틀렸습니다.")
+                    title="로그인 실패", message="아이디가 틀렸습니다.")
             elif db_password != password:
-                messagebox.askyesno(title="로그인 실패", message="비밀번호가\n 틀렸습니다.")
+                messagebox.askyesno(title="로그인 실패", message="비밀번호가 틀렸습니다.")
             else:
                 messagebox.askyesno(title="로그인 성공", message="알림창을 닫고 진행하십시오.")
                 bank = BankAccount(pk)
