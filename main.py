@@ -1,14 +1,16 @@
-import json
-import os.path
-from tkinter import *
-from tkinter import messagebox
+import json  # json모듈을 호출한다.
+import os.path  # os.path를 호출한다.
+from tkinter import *  # tkinter 모듈을 포함한다.
+from tkinter import messagebox  # thkinter 모듈에서 메세지박스를 호출한다.
+
+# App 클래스를 정의합니다.
 
 
 class App(Tk):
     def __init__(self):
         Tk.__init__(self)
-        self._frame = None
-        self.switch_frame(LoginPage)
+        self._frame = None  # 기본 프레임은 없다.
+        self.switch_frame(LoginPage)  # 시작하면 로그인 페이지 클래스로 프레임을 전환합니다.
 
     def switch_frame(self, frame_class):
         new_frame = frame_class(self)
@@ -18,6 +20,7 @@ class App(Tk):
         self._frame.pack()
 
 
+# 로그인 페이지 클래스를 정의합니다.
 class LoginPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
@@ -47,6 +50,7 @@ class LoginPage(Frame):
         exit_button.grid(row=4, column=2, sticky=W, pady=4)
 
 
+# 회원가입 페이지 클래스를 정의합니다.
 class SignUpPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
@@ -80,11 +84,12 @@ class SignUpPage(Frame):
         back_button.grid(row=10)
 
 
-# 입력 함수 부분
+# 회원가입 페이지에서 입력받은 정보를 json 파일에 저장하는 함수
 def signWrite(pk, username, ID, password):
     user_file_path = "./json/users.json"
     user_data = {}
 
+    # json 파일이 존재하는지 확인
     if os.path.exists(user_file_path):
         with open(user_file_path, "r") as json_file:
             user_data = json.load(json_file)
@@ -99,6 +104,8 @@ def signWrite(pk, username, ID, password):
 
         with open(user_file_path, "w") as outfile:
             json.dump(user_data, outfile, indent=4)
+
+    # json파일이 존재하지않을 경우 실행
     else:
         user_data[pk] = {
             "pk": pk,
@@ -112,6 +119,7 @@ def signWrite(pk, username, ID, password):
             json.dump(user_data, outfile, indent=4)
 
 
+# 잔액을 json파일에 입력하는 함수
 def writeBalance(pk, balance):
     user_file_path = "./json/users.json"
     with open(user_file_path, "r") as json_file:
@@ -122,9 +130,11 @@ def writeBalance(pk, balance):
         json.dump(user_data, outfile, indent=4)
 
 
-# 출력 함수 부분
+# json 내부 내용 출력 함수
 def read(pk):
     user_file_path = "./json/users.json"
+
+    # json 파일이 존재하는지 확인
     if os.path.exists(user_file_path):
         with open(user_file_path, "r") as json_file:
             json_data = json.load(json_file)
@@ -132,8 +142,11 @@ def read(pk):
             return user
 
 
+# 로그인을 위해 json에서 id, ps를 불러오는 함수
 def loginRead(pk):
     user_file_path = "./json/users.json"
+
+    # json 파일이 존재하는지 확인
     if os.path.exists(user_file_path):
         with open(user_file_path, "r") as json_file:
             json_data = json.load(json_file)
@@ -141,6 +154,8 @@ def loginRead(pk):
             ID = user.get("id")
             Password = user.get("password")
             return ID, Password
+
+    # json파일이 존재하지않을 경우 실행
     else:
         messagebox.askyesno(title="DB 에러", message="DB가 존재하지 않습니다.")
 
@@ -152,6 +167,8 @@ def sign_in(inputPK, inputUsername, inputID, inputPassword):
     ID = inputID.get()
     password = inputPassword.get()
     data = read(pk)
+
+    # 회원가입 확인(validation)
     if data is not None:
         data_pk = data.get("pk")
         data_user = data.get("username")
@@ -226,7 +243,7 @@ def login(inputPK, inputID, inputPassword):
             elif db_password != password:
                 messagebox.askyesno(title="로그인 실패", message="비밀번호가\n 틀렸습니다.")
             else:
-                messagebox.askyesno(title="로그인 성공", message="창을 닫고 진행하십시오.")
+                messagebox.askyesno(title="로그인 성공", message="알림창을 닫고 진행하십시오.")
                 bank = BankAccount(pk)
                 while True:
                     menu = int(
@@ -249,7 +266,7 @@ def login(inputPK, inputID, inputPassword):
             pass
 
 
-# 은행 기능 부분
+# 은행 기능 클래스
 class BankAccount:
 
     def __init__(self, pk):
@@ -258,6 +275,7 @@ class BankAccount:
         self.__balance = data.get("balance")
         self.__balance = int(self.__balance)
 
+    # 입금에 대한 함수 정의
     def deposit(self, amount):
         if amount < 0:
             print("음수는 입력할 수 없습니다.")
@@ -267,6 +285,7 @@ class BankAccount:
             writeBalance(self.__pk, self.__balance)
             return self.__balance
 
+    # 송금에 대한 함수 정의
     def withdraw(self, amount):
         if amount > self.__balance:
             print("잔액이 부족합니다.")
@@ -276,6 +295,7 @@ class BankAccount:
             writeBalance(self.__pk, self.__balance)
             return self.__balance
 
+    # 잔액을 가져오는 함수 정의
     def get_balance(self):
         return self.__balance
 
